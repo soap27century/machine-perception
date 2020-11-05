@@ -8,6 +8,7 @@ import torchvision
 import torchvision.transforms as transforms
 import os
 import argparse
+import torch.nn.functional as F
 from models import *
 from utils import progress_bar
 
@@ -81,7 +82,7 @@ def train(epoch):
         inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
         outputs = net(inputs)
-        loss = criterion(outputs, targets)
+        loss = F.cross_entropy(outputs, targets)
         loss.backward()
         optimizer.step()
 
@@ -104,7 +105,7 @@ def test(epoch):
         for batch_idx, (inputs, targets) in enumerate(testloader):
             inputs, targets = inputs.to(device), targets.to(device)
             outputs = net(inputs)
-            loss = criterion(outputs, targets)
+            loss = F.cross_entropy(outputs, targets)
 
             test_loss += loss.item()
             _, predicted = outputs.max(1)
